@@ -1,5 +1,19 @@
 server:
   port: 8761
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    health:
+      show-details: always
+      show-components: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
 eureka:
   instance:
     hostname: localhost
