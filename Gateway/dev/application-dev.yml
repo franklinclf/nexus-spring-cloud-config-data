@@ -7,6 +7,14 @@ management:
       exposure:
         include: "*"
 
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
 eureka:
   client:
     service-url:
