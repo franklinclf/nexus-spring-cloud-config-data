@@ -8,7 +8,7 @@ spring:
       base-url: https://generativelanguage.googleapis.com/v1beta/openai/
       chat:
         options:
-          model: gemma-3n-e4b-it
+          model: gemini-2.0-flash-lite
         completions-path: /chat/completions
       embedding:
         options:
