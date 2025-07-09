@@ -1,6 +1,22 @@
 server:
   port: 8082
 
+spring:
+  ai:
+    openai:
+      api-key: AIzaSyA1uhQ2iUXAaoW7lY7-wHH-rTWvNByt7Tk
+      base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+      chat:
+        options:
+          model: gemma-3n-e4b-it
+        completions-path: /chat/completions
+      embedding:
+        options:
+          model: text-embedding-004
+        base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+        api-key: AIzaSyA1uhQ2iUXAaoW7lY7-wHH-rTWvNByt7Tk
+        embeddings-path: /embeddings
+
 management:
   endpoints:
     web:
