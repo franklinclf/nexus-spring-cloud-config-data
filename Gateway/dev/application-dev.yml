@@ -10,13 +10,18 @@ management:
       show-components: always
   metrics.tags.application: ${spring.application.name}
 
+
 spring:
-  cloud.gateway:
-    metrics:
-      enabled: true
-    discovery.locator:
-      enabled: true
-      lower-case-service-id: true
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id:cloud.gateway: true
+          metrics:
+            enabled: true
 
 eureka:
   client:
@@ -31,6 +36,3 @@ eureka:
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}
-    metadata-map:
-      zone: zona-1
-      version: v1
