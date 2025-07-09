@@ -19,7 +19,7 @@ spring:
           discovery:
             locator:
               enabled: true
-              lower-case-service-id:cloud.gateway: true
+              lower-case-service-id: true
           metrics:
             enabled: true
 
@@ -27,7 +27,7 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
-    register-with-eureka: true
+    register-with-eureka: false
     fetch-registry: true
     healthcheck:
       enabled: true
