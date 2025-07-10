@@ -1,5 +1,12 @@
 server:
-  port: 8083
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/nexus
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
 
 management:
   endpoints:
@@ -24,11 +31,8 @@ eureka:
     fetch-registry: true
     healthcheck:
       enabled: true
-    lease-renewal-interval-in-seconds: 5
-    lease-expiration-duration-in-seconds: 10
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
   instance:
     prefer-ip-address: true
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-    metadata-map:
-      zone: zona-1
-      version: v1
+    instance-id: ${spring.application.name}
