@@ -10,7 +10,6 @@ management:
       show-components: always
   metrics.tags.application: ${spring.application.name}
 
-
 spring:
   cloud:
     gateway:

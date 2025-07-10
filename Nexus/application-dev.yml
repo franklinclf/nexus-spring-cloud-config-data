@@ -6,7 +6,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/nexus
     username: admin
     password: admin
-    driver-class-name: org.postgresql.Driver
 
 management:
   endpoints:
