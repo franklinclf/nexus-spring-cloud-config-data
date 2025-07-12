@@ -4,7 +4,7 @@ server:
 spring:
   ai:
     openai:
-      api-key: AIzaSyA1uhQ2iUXAaoW7lY7-wHH-rTWvNByt7Tk
+      api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
       base-url: https://generativelanguage.googleapis.com/v1beta/openai/
       chat:
         options:
@@ -14,7 +14,7 @@ spring:
         options:
           model: text-embedding-004
         base-url: https://generativelanguage.googleapis.com/v1beta/openai/
-        api-key: AIzaSyA1uhQ2iUXAaoW7lY7-wHH-rTWvNByt7Tk
+        api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
         embeddings-path: /embeddings
 
 management:
