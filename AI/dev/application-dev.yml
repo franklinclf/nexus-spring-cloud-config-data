@@ -27,3 +27,7 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
+
+mcp:
+  server:
+    base-url: gateway:8080/nexus
