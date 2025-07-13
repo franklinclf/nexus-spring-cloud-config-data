@@ -3,6 +3,12 @@ server:
 
 spring:
   ai:
+    mcp:
+      client:
+        sse:
+          connections:
+            nexus-mcp:
+              url: http://nexus:8081
     openai:
       api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
       base-url: https://generativelanguage.googleapis.com/v1beta/openai/
@@ -16,12 +22,6 @@ spring:
         base-url: https://generativelanguage.googleapis.com/v1beta/openai/
         api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
         embeddings-path: /embeddings
-
-  mcp:
-    client:
-      sse:
-        connections:
-          nexus-mcp: http://gateway:8080/nexus
 
 management:
   endpoints:
