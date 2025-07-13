@@ -16,8 +16,8 @@ spring:
         base-url: https://generativelanguage.googleapis.com/v1beta/openai/
         api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
         embeddings-path: /embeddings
-  vector-store:
-    path: ${VECTOR_STORE_PATH:vectorstore.json}
+    vector-store:
+      path: ${VECTOR_STORE_PATH:vectorstore.json}
 
 management:
   endpoints:
