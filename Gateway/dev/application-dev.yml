@@ -1,19 +1,6 @@
 server:
   port: 8080
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  metrics:
-    tags:
-      application: ${spring.application.name}
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
 spring:
   cloud:
     gateway:
@@ -25,3 +12,21 @@ spring:
               lower-case-service-id: true
           metrics:
             enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      discovery:
+        enabled: true
+    access:
+      default: unrestricted
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  zipkin:
+    tracing:
+      export:
+        enabled: true
+      endpoint: http://zipkin:9411/api/v2/spans
