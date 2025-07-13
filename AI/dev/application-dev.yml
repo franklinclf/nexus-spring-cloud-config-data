@@ -17,6 +17,18 @@ spring:
         api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
         embeddings-path: /embeddings
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+    healthcheck:
+      enabled: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}
+
 management:
   endpoints:
     web:
