@@ -6,13 +6,6 @@ spring:
     gateway:
       server:
         webflux:
-          globalcors:
-            cors-configurations:
-              '[/**]':
-                allowedOrigins: "*"
-                allowedMethods: "*"
-                allowedHeaders: "*"
-                allowCredentials: true
           discovery:
             locator:
               enabled: true
@@ -23,6 +16,11 @@ spring:
 management:
   endpoints:
     web:
+      cors:
+        allowed-origins: *
+        allowed-headers: *
+        allowed-methods: *
+        allow-credentials: true
       exposure:
         include: "*"
       discovery:
