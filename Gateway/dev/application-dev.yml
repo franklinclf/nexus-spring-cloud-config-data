@@ -4,14 +4,20 @@ server:
 spring:
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      metrics:
+        enabled: true
       server:
         webflux:
-          discovery:
-            locator:
-              enabled: true
-              lower-case-service-id: true
-          metrics:
-            enabled: true
+          globalcors:
+            cors-configurations:
+              '[/**']:
+                allowedOrigins: "*"
+                allowedMethods: "*"
+                allowedHeaders: "*"
 
 management:
   endpoints:
