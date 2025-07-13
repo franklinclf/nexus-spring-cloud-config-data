@@ -2,13 +2,17 @@ server:
   port: 8080
 
 management:
-  prometheus.metrics.export.enabled: true
-  endpoints.web.exposure:
-    include: "*"
-    health:
-      show-details: always
-      show-components: always
-  metrics.tags.application: ${spring.application.name}
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 spring:
   cloud:
@@ -30,8 +34,8 @@ eureka:
     fetch-registry: true
     healthcheck:
       enabled: true
-    lease-renewal-interval-in-seconds: 30
-    lease-expiration-duration-in-seconds: 90
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}
+    lease-expiration-duration-in-seconds: 30
+    lease-renewal-interval-in-seconds: 15
