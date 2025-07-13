@@ -4,20 +4,23 @@ server:
 spring:
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-      metrics:
-        enabled: true
       server:
         webflux:
           globalcors:
             cors-configurations:
-              '[/**']:
-                allowedOrigins: "*"
-                allowedMethods: "*"
-                allowedHeaders: "*"
+                '[/**']:
+                  allowedOrigins: "*"
+                  allowedMethods: "*"
+                  allowedHeaders: "*"
+          discovery:
+            locator:
+              lower-case-service-id: true
+              enabled: true
+          metrics:
+            enabled: true
+            tags:
+              application: ${spring.application.name}
+              environment: ${spring.profiles.active:default}
 
 management:
   endpoints:
@@ -75,6 +78,7 @@ resilience4j:
           - org.springframework.web.reactive.function.client.WebClientResponseException.BadGateway
           - org.springframework.web.reactive.function.client.WebClientResponseException.ServiceUnavailable
           - org.springframework.web.reactive.function.client.WebClientResponseException.GatewayTimeout
+
   bulkhead:
     configs:
       default:
@@ -89,22 +93,22 @@ resilience4j:
         timeout-duration: 1s
 
   retry:
-  configs:
-    default:
-      max-attempts: 3
-      wait-duration: 1s
-      exponential-backoff-multiplier: 2
-      randomized-wait-factor: 0.5
-      retry-exceptions:
-        - java.net.ConnectException
-        - java.net.SocketTimeoutException
-        - java.util.concurrent.TimeoutException
-        - org.springframework.web.reactive.function.client.WebClientResponseException.InternalServerError
-        - org.springframework.web.reactive.function.client.WebClientResponseException.BadGateway
-        - org.springframework.web.reactive.function.client.WebClientResponseException.ServiceUnavailable
-        - org.springframework.web.reactive.function.client.WebClientResponseException.GatewayTimeout
-      ignore-exceptions:
-        - org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
-        - org.springframework.web.reactive.function.client.WebClientResponseException.Unauthorized
-        - org.springframework.web.reactive.function.client.WebClientResponseException.Forbidden
-        - org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
+    configs:
+      default:
+        max-attempts: 3
+        wait-duration: 1s
+        exponential-backoff-multiplier: 2
+        randomized-wait-factor: 0.5
+        retry-exceptions:
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.reactive.function.client.WebClientResponseException.InternalServerError
+          - org.springframework.web.reactive.function.client.WebClientResponseException.BadGateway
+          - org.springframework.web.reactive.function.client.WebClientResponseException.ServiceUnavailable
+          - org.springframework.web.reactive.function.client.WebClientResponseException.GatewayTimeout
+        ignore-exceptions:
+          - org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
+          - org.springframework.web.reactive.function.client.WebClientResponseException.Unauthorized
+          - org.springframework.web.reactive.function.client.WebClientResponseException.Forbidden
+          - org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
