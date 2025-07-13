@@ -1,37 +1,25 @@
 server:
-  port: 8081
+  port: 8080
 
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/nexus
-    username: admin
-    password: admin
+  ai:
+    mcp:
+      server:
+        name: nexus-mcp
+        
+  jpa:
+    hibernate:
+      ddl-auto: update
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-    health:
-      show-details: always
-      show-components: always
   metrics:
     tags:
       application: ${spring.application.name}
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: true
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-    register-with-eureka: true
-    fetch-registry: true
-    healthcheck:
-      enabled: true
-    lease-renewal-interval-in-seconds: 30
-    lease-expiration-duration-in-seconds: 90
-  instance:
-    prefer-ip-address: true
-    instance-id: ${spring.application.name}
