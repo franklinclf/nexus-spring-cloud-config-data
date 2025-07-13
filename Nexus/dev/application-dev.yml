@@ -15,7 +15,6 @@ spring:
         name: nexus-mcp
 
   datasource:
-    driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://postgres:5432/nexus
     username: admin
     password: admin
