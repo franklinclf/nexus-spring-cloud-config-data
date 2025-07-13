@@ -2,19 +2,18 @@ server:
   port: 8761
 
 management:
+  endpoint:
+    health:
+      access: unrestricted
+      show-components: always
+      show-details: always
   endpoints:
     web:
       exposure:
         include: "*"
-    health:
-      show-details: always
-      show-components: always
   metrics:
     tags:
       application: ${spring.application.name}
-    export:
-      prometheus:
-        enabled: true
 
 eureka:
   instance:
