@@ -6,6 +6,13 @@ spring:
     gateway:
       server:
         webflux:
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOrigins: "*"
+                allowedMethods: "*"
+                allowedHeaders: "*"
+                allowCredentials: true
           discovery:
             locator:
               enabled: true
@@ -22,11 +29,78 @@ management:
         enabled: true
     access:
       default: unrestricted
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
   metrics:
+    distribution:
+      percentiles-histogram:
+        resilience4j.circuitbreaker.calls: true
+        resilience4j.retry.calls: true
+        resilience4j.ratelimiter.calls: true
     tags:
       application: ${spring.application.name}
+      environment: ${spring.profiles.active:default}
   zipkin:
     tracing:
       export:
         enabled: true
       endpoint: http://zipkin:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 15s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        slow-call-duration-threshold: 5s
+        slow-call-rate-threshold: 60
+        record-exceptions:
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.reactive.function.client.WebClientResponseException.InternalServerError
+          - org.springframework.web.reactive.function.client.WebClientResponseException.BadGateway
+          - org.springframework.web.reactive.function.client.WebClientResponseException.ServiceUnavailable
+          - org.springframework.web.reactive.function.client.WebClientResponseException.GatewayTimeout
+  bulkhead:
+    configs:
+      default:
+        max-concurrent-calls: 20
+        max-wait-duration: 1s
+
+  ratelimiter:
+    configs:
+      default:
+        limit-for-period: 100
+        limit-refresh-period: 1s
+        timeout-duration: 1s
+
+  retry:
+  configs:
+    default:
+      max-attempts: 3
+      wait-duration: 1s
+      exponential-backoff-multiplier: 2
+      randomized-wait-factor: 0.5
+      retry-exceptions:
+        - java.net.ConnectException
+        - java.net.SocketTimeoutException
+        - java.util.concurrent.TimeoutException
+        - org.springframework.web.reactive.function.client.WebClientResponseException.InternalServerError
+        - org.springframework.web.reactive.function.client.WebClientResponseException.BadGateway
+        - org.springframework.web.reactive.function.client.WebClientResponseException.ServiceUnavailable
+        - org.springframework.web.reactive.function.client.WebClientResponseException.GatewayTimeout
+      ignore-exceptions:
+        - org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
+        - org.springframework.web.reactive.function.client.WebClientResponseException.Unauthorized
+        - org.springframework.web.reactive.function.client.WebClientResponseException.Forbidden
+        - org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
