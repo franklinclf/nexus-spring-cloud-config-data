@@ -2,36 +2,41 @@ server:
   port: 8081
 
 spring:
+  ai:
+    openai:
+      embedding:
+        options:
+          model: text-embedding-004
+        base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+        embeddings-path: /embeddings
+      api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
+    mcp:
+      server:
+        name: nexus-mcp
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/nexus
+    url: jdbc:postgresql://postgres:5432/nexus
     username: admin
     password: admin
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: update
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-    health:
-      show-details: always
-      show-components: always
+      discovery:
+        enabled: true
+    access:
+      default: unrestricted
   metrics:
     tags:
       application: ${spring.application.name}
-    export:
-      prometheus:
+  zipkin:
+    tracing:
+      export:
         enabled: true
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-    register-with-eureka: true
-    fetch-registry: true
-    healthcheck:
-      enabled: true
-    lease-renewal-interval-in-seconds: 30
-    lease-expiration-duration-in-seconds: 90
-  instance:
-    prefer-ip-address: true
-    instance-id: ${spring.application.name}
+      endpoint: http://zipkin:9411/api/v2/spans
