@@ -24,6 +24,13 @@ spring:
       ddl-auto: update
 
 management:
+  endpoint:
+    configprops:
+      show-values: always
+      access: unrestricted
+    env:
+      show-values: always
+      access: unrestricted
   endpoints:
     web:
       exposure:
