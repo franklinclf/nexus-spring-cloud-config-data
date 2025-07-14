@@ -22,21 +22,21 @@ management:
 spring:
   cloud:
     gateway:
-      routes:
-        - id: nexus
-          uri: lb://nexus
-          predicates:
-            - Path=/nexus/**
-        - id: ai
-          uri: lb://ai
-          predicates:
-            - Path=/ai/**
-        - id: config
-          uri: lb://config
-          predicates:
-            - Path=/config/**
       server:
         webflux:
+          routes:
+          - id: nexus
+            uri: lb://nexus
+            predicates:
+              - Path=/nexus/**
+              - id: ai
+                uri: lb://ai
+                predicates:
+                  - Path=/ai/**
+              - id: config
+                uri: lb://config
+                predicates:
+                  - Path=/config/**
           discovery:
             locator:
               enabled: true
@@ -47,13 +47,14 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://eureka:8761/eureka
+      defaultZone: http://localhost:8761/eureka
     register-with-eureka: false
     fetch-registry: true
     healthcheck:
       enabled: true
     lease-renewal-interval-in-seconds: 30
     lease-expiration-duration-in-seconds: 90
+
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}
