@@ -3,12 +3,21 @@ server:
 
 management:
   prometheus.metrics.export.enabled: true
-  endpoints.web.exposure:
-    include: "*"
-    health:
-      show-details: always
-      show-components: always
-  metrics.tags.application: ${spring.application.name}
+  endpoints:
+    show-values: ALWAYS
+    web.exposure:
+      include: "*"
+      health:
+        show-details: always
+        show-components: always
+  endpoint:
+    configprops:
+      show-values: always
+      access: unrestricted
+    env:
+      show-values: always
+      access: unrestricted
+    metrics.tags.application: ${spring.application.name}
 
 spring:
   cloud:

@@ -31,17 +31,3 @@ management:
     export:
       prometheus:
         enabled: true
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-    register-with-eureka: true
-    fetch-registry: true
-    healthcheck:
-      enabled: true
-    lease-renewal-interval-in-seconds: 30
-    lease-expiration-duration-in-seconds: 90
-  instance:
-    prefer-ip-address: true
-    instance-id: ${spring.application.name}
