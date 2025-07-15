@@ -7,15 +7,16 @@ spring:
       enabled: true
     openai:
       embedding:
+        api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
         options:
           model: text-embedding-004
         base-url: https://generativelanguage.googleapis.com/v1beta/openai/
         embeddings-path: /embeddings
       api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
   datasource:
-    url: jdbc:postgresql://postgres:5432/nexus
-    username: root
-    password: root
+    url: jdbc:postgresql://postgres:5432/nexus-ai
+    username: admin
+    password: admin
   jpa:
     hibernate:
       ddl-auto: update
