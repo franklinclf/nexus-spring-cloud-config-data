@@ -23,7 +23,7 @@ spring:
   cloud:
     gateway:
       server:
-        webflux:
+        webmvc:
           routes:
             - id: nexus
               uri: lb://nexus
@@ -37,9 +37,7 @@ spring:
               uri: lb://config
               predicates:
                 - Path=/config/**
-          discovery:
-            locator:
-              enabled: true
-              lower-case-service-id: true
-          metrics:
-            enabled: true
+            - id: nexus
+              uri: lb://nexus
+              predicates:
+                - Path=/nexus/**

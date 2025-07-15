@@ -3,6 +3,8 @@ server:
 
 spring:
   ai:
+    mcp:
+      enabled: true
     openai:
       embedding:
         options:

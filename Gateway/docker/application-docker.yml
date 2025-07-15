@@ -1,6 +1,3 @@
-server:
-  port: 8080
-
 management:
   prometheus.metrics.export.enabled: true
   endpoints:
