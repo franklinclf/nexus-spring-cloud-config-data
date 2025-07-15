@@ -31,17 +31,6 @@ management:
     export:
       prometheus:
         enabled: true
-eureka:
-  client:
-    service-url:
-      defaultZone: http://host.docker.internal:8761/eureka, http://host.docker.internal:8762/eureka
-    register-with-eureka: true
-    fetch-registry: true
-    healthcheck:
-      enabled: true
-    initial-instance-info-replication-interval-seconds: 0
-    registry-fetch-interval-seconds: 5
-
 logging:
   level:
     root: debug
