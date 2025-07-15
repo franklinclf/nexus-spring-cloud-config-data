@@ -4,7 +4,7 @@ server:
 spring:
   ai:
     openai:
-      api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
+      api-key: AIzaSyCTcYdEcLMEKTajtZAgTtefHrpRWTbw55A
       base-url: https://generativelanguage.googleapis.com/v1beta/openai/
       chat:
         options:
@@ -14,7 +14,7 @@ spring:
         options:
           model: text-embedding-004
         base-url: https://generativelanguage.googleapis.com/v1beta/openai/
-        api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
+        api-key: AIzaSyCTcYdEcLMEKTajtZAgTtefHrpRWTbw55A
         embeddings-path: /embeddings
   datasource:
     url: jdbc:postgresql://postgres:5432/nexus-ai
