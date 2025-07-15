@@ -18,26 +18,3 @@ management:
       show-values: always
       access: unrestricted
     metrics.tags.application: ${spring.application.name}
-
-spring:
-  cloud:
-    gateway:
-      server:
-        webmvc:
-          routes:
-            - id: nexus
-              uri: lb://nexus
-              predicates:
-                - Path=/nexus/**
-            - id: ai
-              uri: lb://ai
-              predicates:
-                - Path=/ai/**
-            - id: config
-              uri: lb://config
-              predicates:
-                - Path=/config/**
-            - id: nexus
-              uri: lb://nexus
-              predicates:
-                - Path=/nexus/**
