@@ -44,3 +44,18 @@ management:
       export:
         enabled: true
       endpoint: http://localhost:9411/api/v2/spans
+
+eureka:
+  client:
+    initial-instance-info-replication-interval-seconds: 0
+    service-url:
+      defaultZone: http://localhost:8761/eureka/,http://localhost:8762/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    instance-id: ${spring.application.name}
+
+logging:
+  level:
+    root: debug
+    web: debug

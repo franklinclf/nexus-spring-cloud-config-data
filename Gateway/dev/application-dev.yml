@@ -57,3 +57,8 @@ eureka:
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}
+
+logging:
+  level:
+    root: debug
+    web: debug
