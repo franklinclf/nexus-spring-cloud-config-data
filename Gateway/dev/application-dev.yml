@@ -25,25 +25,24 @@ spring:
       server:
         webflux:
           routes:
-          - id: nexus
-            uri: lb://nexus
-            predicates:
-              - Path=/nexus/**
-              - id: ai
-                uri: lb://ai
-                predicates:
-                  - Path=/ai/**
-              - id: config
-                uri: lb://config
-                predicates:
-                  - Path=/config/**
+            - id: nexus
+              uri: lb://nexus
+              predicates:
+                - Path=/nexus/**
+            - id: ai
+              uri: lb://ai
+              predicates:
+                - Path=/ai/**
+            - id: config
+              uri: lb://config
+              predicates:
+                - Path=/config/**
           discovery:
             locator:
               enabled: true
               lower-case-service-id: true
           metrics:
             enabled: true
-
 eureka:
   client:
     service-url:
