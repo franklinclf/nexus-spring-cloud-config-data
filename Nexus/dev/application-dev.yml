@@ -12,7 +12,7 @@ spring:
       api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
 
   datasource:
-    url: jdbc:postgresql://docker.host.internal:5432/nexus
+    url: jdbc:postgresql://host.docker.internal:5432/nexus
     username: admin
     password: admin
   jpa:
@@ -43,7 +43,7 @@ management:
     tracing:
       export:
         enabled: true
-      endpoint: http://docker.host.internal:9411/api/v2/spans
+      endpoint: http://host.docker.internal:9411/api/v2/spans
 
 eureka:
   client:
