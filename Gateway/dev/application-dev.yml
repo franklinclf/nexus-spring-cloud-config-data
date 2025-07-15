@@ -51,9 +51,8 @@ eureka:
     fetch-registry: true
     healthcheck:
       enabled: true
-    lease-renewal-interval-in-seconds: 30
-    lease-expiration-duration-in-seconds: 90
-
+    initial-instance-info-replication-interval-seconds: 0
+    registry-fetch-interval-seconds: 5
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}

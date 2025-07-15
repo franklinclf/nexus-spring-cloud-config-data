@@ -12,7 +12,7 @@ spring:
       api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/nexus
+    url: jdbc:postgresql://docker.host.internal:5432/nexus
     username: admin
     password: admin
   jpa:
@@ -43,17 +43,18 @@ management:
     tracing:
       export:
         enabled: true
-      endpoint: http://localhost:9411/api/v2/spans
+      endpoint: http://docker.host.internal:9411/api/v2/spans
 
 eureka:
   client:
-    initial-instance-info-replication-interval-seconds: 0
     service-url:
-      defaultZone: http://localhost:8761/eureka/,http://localhost:8762/eureka/
+      defaultZone: http://host.docker.internal:8761/eureka, http://host.docker.internal:8762/eureka
     register-with-eureka: true
     fetch-registry: true
-  instance:
-    instance-id: ${spring.application.name}
+    healthcheck:
+      enabled: true
+    initial-instance-info-replication-interval-seconds: 0
+    registry-fetch-interval-seconds: 5
 
 logging:
   level:
