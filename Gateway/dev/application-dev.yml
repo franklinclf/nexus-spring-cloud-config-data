@@ -46,18 +46,12 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://host.docker.internal:8761/eureka, http://host.docker.internal:8762/eureka
+      defaultZone: http://docker.host.internal:8761/eureka, http://docker.host.internal:8762/eureka
     register-with-eureka: true
     fetch-registry: true
-    healthcheck:
-      enabled: true
     initial-instance-info-replication-interval-seconds: 0
     registry-fetch-interval-seconds: 5
+
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}
-
-logging:
-  level:
-    root: debug
-    web: debug
