@@ -1,0 +1,33 @@
+server:
+  port: 8082
+
+spring:
+  ai:
+    openai:
+      api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
+      base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+      chat:
+        options:
+          model: gemini-2.0-flash-lite
+        completions-path: /chat/completions
+      embedding:
+        options:
+          model: text-embedding-004
+        base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+        api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
+        embeddings-path: /embeddings
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    health:
+      show-details: always
+      show-components: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true

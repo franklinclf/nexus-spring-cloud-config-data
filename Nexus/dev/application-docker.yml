@@ -12,7 +12,7 @@ spring:
       api-key: AIzaSyCdLcucHHGAWQ5gMTKcN4-xbCfI1OFY_pU
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/nexus
+    url: jdbc:postgresql://postgres:5432/nexus
     username: admin
     password: admin
   jpa:
@@ -43,4 +43,4 @@ management:
     tracing:
       export:
         enabled: true
-      endpoint: http://localhost:9411/api/v2/spans
+      endpoint: http://zipkin:9411/api/v2/spans
