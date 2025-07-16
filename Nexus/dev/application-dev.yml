@@ -1,10 +1,18 @@
 server:
-  port: 8081
+  port: ${server.port:8081}
 
 spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/nexus-ai-rag
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+
   ai:
     openai:
-      api-key: AIzaSyCTcYdEcLMEKTajtZAgTtefHrpRWTbw55A
+      api-key: ${spring.ai.openai.api-key}
       base-url: https://generativelanguage.googleapis.com/v1beta/openai/
       chat:
         options:
@@ -14,25 +22,32 @@ spring:
         options:
           model: text-embedding-004
         base-url: https://generativelanguage.googleapis.com/v1beta/openai/
-        api-key: AIzaSyCTcYdEcLMEKTajtZAgTtefHrpRWTbw55A
+        api-key: ${spring.ai.openai.api-key}
         embeddings-path: /embeddings
-  datasource:
-    url: jdbc:postgresql://postgres:5432/nexus-ai
-    username: admin
-    password: admin
-  jpa:
-    hibernate:
-      ddl-auto: create
-    database: postgresql
+
+    vectorstore:
+      pgvector:
+        index-type: hnsw
+        dimensions: 1536
+        distance-type: cosine_distance
+        initialize-schema: true
+        id-type: uuid
+
+    mcp:
+      server:
+        name: mcp-server
+        sse-endpoint: /sse
+        sse-message-endpoint: /sse/message
+        type: sync
+        enabled: true
+        capabilities:
+          tool: true
+        version: 1.0.0
+        stdio: false
+        request-timeout: 30s
+        base-url: /tools
 
 management:
-  endpoint:
-    configprops:
-      show-values: always
-      access: unrestricted
-    env:
-      show-values: always
-      access: unrestricted
   endpoints:
     web:
       exposure:
@@ -41,15 +56,42 @@ management:
         enabled: true
     access:
       default: unrestricted
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        step: 5s
+  logging:
+    export:
+      enabled: true
   metrics:
     tags:
-      application: ${spring.application.name}
+      application: ${spring.application.name}-${REPLICA_ID:1}
+    distribution:
+      percentiles-histogram:
+        enabled: true
+        http.server.requests: true
+        http.client.requests: true
+    enable:
+      jvm: true
+      process: true
+      system: true
+  tracing:
+    sampling:
+      probability: 1
   zipkin:
     tracing:
       export:
         enabled: true
-      endpoint: http://host.docker.internal:9411/api/v2/spans
-logging:
-  level:
-    root: debug
-    web: debug
+      endpoint: http://zipkin:9411/api/v2/spans
+  endpoint:
+    metrics:
+      access: unrestricted
+    prometheus:
+      access: unrestricted
+    health:
+      show-details: always
+      show-components: always
+      probes:
+        enabled: true
+

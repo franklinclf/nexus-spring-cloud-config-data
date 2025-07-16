@@ -1,20 +1,68 @@
 server:
-  port: 8080
+  port: ${server.port:8081}
+
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              lower-case-service-id: true
+              enabled: true
+          routes:
+            - id: nexus-tools
+              uri: lb://nexus
+              predicates:
+                - Path=/nexus/tools/**
+              filters:
+                - StripPrefix=2
+              order: -1
 
 management:
-  prometheus.metrics.export.enabled: true
   endpoints:
-    show-values: ALWAYS
-    web.exposure:
-      include: "*"
-      health:
-        show-details: always
-        show-components: always
+    web:
+      exposure:
+        include: "*"
+      discovery:
+        enabled: true
+    access:
+      default: unrestricted
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        step: 5s
+  logging:
+    export:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}-${REPLICA_ID:1}
+    distribution:
+      percentiles-histogram:
+        enabled: true
+        http.server.requests: true
+        http.client.requests: true
+    enable:
+      jvm: true
+      process: true
+      system: true
+  tracing:
+    sampling:
+      probability: 1
+  zipkin:
+    tracing:
+      export:
+        enabled: true
+      endpoint: http://zipkin:9411/api/v2/spans
   endpoint:
-    configprops:
-      show-values: always
+    metrics:
       access: unrestricted
-    env:
-      show-values: always
+    prometheus:
       access: unrestricted
-    metrics.tags.application: ${spring.application.name}
+    health:
+      show-details: always
+      show-components: always
+      probes:
+        enabled: true
