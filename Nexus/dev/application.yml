@@ -44,7 +44,7 @@ spring:
           tool: true
         version: 1.0.0
         stdio: false
-        request-timeout: 30s
+        request-timeout: 60s
         base-url: /tools
 
 management:
