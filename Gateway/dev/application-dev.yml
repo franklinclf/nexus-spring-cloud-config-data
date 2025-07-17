@@ -11,10 +11,10 @@ spring:
               lower-case-service-id: true
               enabled: true
           routes:
-            - id: nexus-tools
-              uri: lb://nexus
+            - id: mcp-tools
+              uri: lb://mcp
               predicates:
-                - Path=/nexus/tools/**
+                - Path=/mcp/tools/**
               filters:
                 - StripPrefix=2
               order: -5

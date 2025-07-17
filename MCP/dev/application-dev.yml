@@ -1,0 +1,96 @@
+server:
+  port: ${PORT:8083}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/nexus-ai
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  ai:
+    openai:
+      api-key: ${API_KEY}
+      base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+      chat:
+        options:
+          model: gemini-2.0-flash-lite
+        completions-path: /chat/completions
+      embedding:
+        options:
+          model: text-embedding-004
+        base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+        api-key: ${API_KEY}
+        embeddings-path: /embeddings
+
+    vectorstore:
+      pgvector:
+        index-type: hnsw
+        dimensions: 1536
+        distance-type: cosine_distance
+        initialize-schema: true
+        id-type: uuid
+
+    mcp:
+      server:
+        name: mcp-server
+        sse-endpoint: /sse
+        sse-message-endpoint: /mcp/message
+        type: sync
+        enabled: true
+        capabilities:
+          tool: true
+        version: 1.0.0
+        stdio: false
+        request-timeout: 60s
+        base-url: /tools
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      discovery:
+        enabled: true
+    access:
+      default: unrestricted
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        step: 5s
+  logging:
+    export:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}-${REPLICA_ID:1}
+    distribution:
+      percentiles-histogram:
+        enabled: true
+        http.server.requests: true
+        http.client.requests: true
+    enable:
+      jvm: true
+      process: true
+      system: true
+  tracing:
+    sampling:
+      probability: 1
+  zipkin:
+    tracing:
+      export:
+        enabled: true
+      endpoint: http://zipkin:9411/api/v2/spans
+  endpoint:
+    metrics:
+      access: unrestricted
+    prometheus:
+      access: unrestricted
+    health:
+      show-details: always
+      show-components: always
+      probes:
+        enabled: true
