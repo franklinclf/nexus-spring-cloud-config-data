@@ -12,7 +12,7 @@ spring:
 
   ai:
     openai:
-      api-key: ${spring.ai.openai.api-key}
+      api-key: ${API_KEY}
       base-url: https://generativelanguage.googleapis.com/v1beta/openai/
       chat:
         options:
@@ -22,7 +22,7 @@ spring:
         options:
           model: text-embedding-004
         base-url: https://generativelanguage.googleapis.com/v1beta/openai/
-        api-key: ${spring.ai.openai.api-key}
+        api-key: ${API_KEY}
         embeddings-path: /embeddings
 
     vectorstore:
