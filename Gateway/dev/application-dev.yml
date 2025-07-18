@@ -10,14 +10,6 @@ spring:
             locator:
               lower-case-service-id: true
               enabled: true
-          routes:
-            - id: mcp-tools
-              uri: lb://mcp
-              predicates:
-                - Path=/mcp/tools/**
-              filters:
-                - StripPrefix=2
-              order: -5
 
 management:
   endpoints:
