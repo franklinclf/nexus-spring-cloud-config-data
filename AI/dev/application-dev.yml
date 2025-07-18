@@ -20,6 +20,7 @@ spring:
         completions-path: /chat/completions
       embedding:
         options:
+          dimensions: 1536
           model: text-embedding-004
         base-url: https://generativelanguage.googleapis.com/v1beta/openai/
         api-key: ${API_KEY}
@@ -41,7 +42,6 @@ spring:
           connections:
             mcp-server:
               url: http://gateway:8080
-              sse-endpoint: /mcp/sse
         request-timeout: 30000
         enabled: true
 
