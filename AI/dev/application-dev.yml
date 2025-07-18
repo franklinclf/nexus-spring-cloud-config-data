@@ -40,8 +40,8 @@ spring:
         sse:
           connections:
             mcp-server:
-              url: http://gateway:8080/mcp
-              sse-endpoint: /sse
+              url: http://gateway:8080
+              sse-endpoint: /mcp/sse
         request-timeout: 30000
         enabled: true
 
