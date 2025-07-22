@@ -32,7 +32,7 @@ spring:
                     methods: GET, POST, PUT, DELETE, PATCH
                     backoff:
                       firstBackoff: 100ms
-                      maxBackoff: 80ms
+                      maxBackoff: 800ms
                       factor: 2
                       basedOnPreviousValue: false
                     timeout: 500ms
