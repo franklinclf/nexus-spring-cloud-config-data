@@ -16,7 +16,7 @@ spring:
       base-url: https://generativelanguage.googleapis.com/v1beta/openai/
       chat:
         options:
-          model: gemini-2.0-flash-lite
+          model: gemini-2.5-flash
         completions-path: /chat/completions
       embedding:
         options:

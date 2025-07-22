@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://postgres:5432/nexus-ai
+    url: jdbc:postgresql://postgres:5432/nexus-ai-rag
     username: admin
     password: admin
   jpa:
