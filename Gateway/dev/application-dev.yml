@@ -6,10 +6,104 @@ spring:
     gateway:
       server:
         webflux:
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowed-origins: "*"
+                allowed-methods: "*"
+                allowed-headers: "*"
+                allowed-origin-patterns:
+                  - "*"
+          routes:
+            - id: nexus
+              uri: lb://Nexus
+              predicates:
+                - Path=/nexus/**
+              filters:
+                - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: nexusCircuitBreaker
+                    fallbackUri: forward:/fallback
+                - name: Retry
+                  args:
+                    retries: 5
+                    statuses: BAD_GATEWAY, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR, IO_EXCEPTION
+                    methods: GET, POST, PUT, DELETE, PATCH
+                    backoff:
+                      firstBackoff: 100ms
+                      maxBackoff: 500ms
+                      factor: 1.5
+                      basedOnPreviousValue: false
+                    timeout: 500ms
+            - id: ai
+              uri: lb://AI
+              predicates:
+                - Path=/ai/**
+              filters:
+                - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: aiCircuitBreaker
+                    fallbackUri: forward:/fallback
+                - name: Retry
+                  args:
+                    retries: 5
+                    statuses: BAD_GATEWAY, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR, IO_EXCEPTION
+                    methods: GET, POST, PUT, DELETE, PATCH
+                    backoff:
+                      firstBackoff: 100ms
+                      maxBackoff: 500ms
+                      factor: 1.5
+                      basedOnPreviousValue: false
+                    timeout: 500ms
+            - id: tools
+              uri: lb://MCP
+              predicates:
+                - Path=/tools/**
+              filters:
+                - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: toolsCircuitBreaker
+                    fallbackUri: forward:/fallback
+                - name: Retry
+                  args:
+                    retries: 5
+                    statuses: BAD_GATEWAY, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR, IO_EXCEPTION
+                    methods: GET, POST, PUT, DELETE, PATCH
+                    backoff:
+                      firstBackoff: 100ms
+                      maxBackoff: 500ms
+                      factor: 1.5
+                      basedOnPreviousValue: false
+                    timeout: 500ms
           discovery:
             locator:
               lower-case-service-id: true
               enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      nexusCircuitBreaker:
+        sliding-window-size: 15
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 5
+        wait-duration-in-open-state: 10000
+        failure-rate-threshold: 50
+      aiCircuitBreaker:
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        wait-duration-in-open-state: 10000
+        failure-rate-threshold: 35
+      toolsCircuitBreaker:
+        sliding-window-size: 15
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 5
+        wait-duration-in-open-state: 10000
+        failure-rate-threshold: 50
 
 management:
   endpoints:
@@ -36,6 +130,7 @@ management:
         enabled: true
         http.server.requests: true
         http.client.requests: true
+        resilience4j.circuitbreaker.calls: true
     enable:
       jvm: true
       process: true
