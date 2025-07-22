@@ -33,7 +33,7 @@ spring:
                     backoff:
                       firstBackoff: 100ms
                       maxBackoff: 500ms
-                      factor: 1.5
+                      factor: 2
                       basedOnPreviousValue: false
                     timeout: 500ms
             - id: ai
@@ -54,7 +54,7 @@ spring:
                     backoff:
                       firstBackoff: 100ms
                       maxBackoff: 500ms
-                      factor: 1.5
+                      factor: 2
                       basedOnPreviousValue: false
                     timeout: 500ms
             - id: tools
