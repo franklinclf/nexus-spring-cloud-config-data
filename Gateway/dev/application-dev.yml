@@ -1,121 +1,95 @@
 server:
   port: ${PORT:8080}
 
-spring:
-  cloud:
-    gateway:
-      server:
-        webflux:
-          globalcors:
-            cors-configurations:
-              '[/**]':
-                allowed-origins: "*"
-                allowed-methods: "*"
-                allowed-headers: "*"
-                allowed-origin-patterns:
-                  - "*"
-          routes:
-            - id: nexus
-              uri: lb://Nexus
-              predicates:
-                - Path=/nexus/**
-              filters:
-                - StripPrefix=1
-                - name: Retry
-                  args:
-                    retries: 5
-                    statuses: BAD_GATEWAY, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR
-                    methods: GET, POST, PUT, DELETE, PATCH
-                    backoff:
-                      firstBackoff: 100ms
-                      maxBackoff: 800ms
-                      factor: 2
-                      basedOnPreviousValue: false
-                    timeout: 500ms
-            - id: ai
-              uri: lb://AI
-              predicates:
-                - Path=/ai/**
-              filters:
-                - StripPrefix=1
-                - name: Retry
-                  args:
-                    retries: 20
-                    statuses: BAD_GATEWAY, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR
-                    methods: GET, POST, PUT, DELETE, PATCH
-                    backoff:
-                      firstBackoff: 100ms
-                      maxBackoff: 800ms
-                      factor: 2
-                      basedOnPreviousValue: false
-                    timeout: 30000ms
-            - id: tools
-              uri: lb://MCP
-              predicates:
-                - Path=/tools/**
-              filters:
-                - StripPrefix=1
-                - name: Retry
-                  args:
-                    retries: 15
-                    statuses: BAD_GATEWAY, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR
-                    methods: GET, POST, PUT, DELETE, PATCH
-                    backoff:
-                      firstBackoff: 100ms
-                      maxBackoff: 800ms
-                      factor: 2
-                      basedOnPreviousValue: false
-                    timeout: 30000ms
-          discovery:
-            locator:
-              lower-case-service-id: true
-              enabled: true
-
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-      discovery:
-        enabled: true
-    access:
-      default: unrestricted
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-        step: 5s
-  logging:
-    export:
-      enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
-    distribution:
-      percentiles-histogram:
-        enabled: true
-        http.server.requests: true
-        http.client.requests: true
-        resilience4j.circuitbreaker.calls: true
-    enable:
-      jvm: true
-      process: true
-      system: true
-  tracing:
-    sampling:
-      probability: 1
-  zipkin:
-    tracing:
-      export:
-        enabled: true
-      endpoint: http://zipkin:9411/api/v2/spans
+      base-path: /actuator
   endpoint:
-    metrics:
-      access: unrestricted
-    prometheus:
-      access: unrestricted
     health:
       show-details: always
       show-components: always
       probes:
         enabled: true
+    metrics:
+      access: unrestricted
+    prometheus:
+      access: unrestricted
+  health:
+    circuitbreakers:
+      enabled: true
+    defaults:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        step: 5s
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      environment: ${ENVIRONMENT:dev}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+        http.client.requests: true
+        resilience4j.circuitbreaker.calls: true
+      percentiles:
+        http.server.requests: 0.5, 0.95, 0.99
+        http.client.requests: 0.5, 0.95, 0.99
+
+  observations:
+    key-values:
+      application: ${spring.application.name}
+  tracing:
+    sampling:
+      probability: 1.0
+    baggage:
+      enabled: true
+      correlation:
+        enabled: true
+        fields:
+          - trace-id
+          - span-id
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+      connect-timeout: 1s
+      read-timeout: 10s
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        recordExceptions:
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - org.springframework.web.client.HttpServerErrorException
+    metrics:
+      enabled: true
+      legacy:
+        enabled: false
+
+  retry:
+    configs:
+      default:
+        enableExponentialBackoff: true
+    metrics:
+      enabled: true
+      legacy:
+        enabled: false
+
+  timelimiter:
+    metrics:
+      enabled: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    io.github.resilience4j: DEBUG
+    io.micrometer: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
