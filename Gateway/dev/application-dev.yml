@@ -59,10 +59,10 @@ management:
       application: ${spring.application.name}
   tracing:
     sampling:
-      probability: 1.0
+      probability: 1
   zipkin:
     tracing:
-      endpoint: http://zipkin:9411/api/v2/spans
+      endpoint: http://zipkin:9411/
       connect-timeout: 5s
       read-timeout: 10s
       export:
