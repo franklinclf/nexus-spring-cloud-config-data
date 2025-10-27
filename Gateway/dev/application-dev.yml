@@ -3,45 +3,129 @@ management:
     web:
       exposure:
         include: "*"
+      base-path: /actuator
       discovery:
         enabled: true
     access:
       default: unrestricted
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-        step: 5s
-  logging:
-    export:
-      enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}-${REPLICA_ID:1}
-    distribution:
-      percentiles-histogram:
-        enabled: true
-        http.server.requests: true
-        http.client.requests: true
-    enable:
-      jvm: true
-      process: true
-      system: true
-  tracing:
-    sampling:
-      probability: 1
-  zipkin:
-    tracing:
-      export:
-        enabled: true
-      endpoint: http://zipkin:9411/api/v2/spans
   endpoint:
-    metrics:
-      access: unrestricted
-    prometheus:
-      access: unrestricted
     health:
       show-details: always
       show-components: always
       probes:
         enabled: true
+    gateway:
+      access: unrestricted
+    prometheus:
+      access: unrestricted
+    metrics:
+      access: unrestricted
+  metrics:
+    enable:
+      all: true
+      jvm: true
+      process: true
+      system: true
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+        resilience4j.circuitbreaker.calls: true
+        enabled: true
+        http.client.requests: true
+      percentiles:
+        http.server.requests: 0.5, 0.95, 0.99
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        pushgateway:
+          enabled: true
+        step: 5s
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1
+    propagation:
+      type: W3C
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+      export:
+        enabled: true
+  logging:
+    export:
+      enabled: true
+
+resilience4j:
+  ratelimiter:
+    configs:
+      default:
+        limitForPeriod: 100
+        limitRefreshPeriod: 1s
+        timeoutDuration: 0s
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 100
+    instances:
+      defaultRateLimiter:
+        baseConfig: default
+        limitForPeriod: 100
+        limitRefreshPeriod: 1s
+      nexusRateLimiter:
+        baseConfig: default
+        limitForPeriod: 50
+        limitRefreshPeriod: 1s
+        timeoutDuration: 100ms
+      aiRateLimiter:
+        limitForPeriod: 10
+        limitRefreshPeriod: 1s
+        timeoutDuration: 0s
+        registerHealthIndicator: true
+      aiHeavyRateLimiter:
+        limitForPeriod: 2
+        limitRefreshPeriod: 1s
+        timeoutDuration: 0s
+        registerHealthIndicator: true
+
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+    instances:
+      nexusCircuitBreaker:
+        baseConfig: default
+        slowCallDurationThreshold: 500ms
+        slowCallRateThreshold: 50
+      aiCircuitBreaker:
+        baseConfig: default
+        slidingWindowSize: 20
+        minimumNumberOfCalls: 10
+        waitDurationInOpenState: 30s
+        slowCallDurationThreshold: 30s
+        permittedNumberOfCallsInHalfOpenState: 5
+
+  retry:
+    configs:
+      default:
+        maxAttempts: 3
+        waitDuration: 100ms
+        retryExceptions:
+          - java.io.IOException
+          - java.net.SocketTimeoutException
+    instances:
+      nexusRetry:
+        baseConfig: default
+        maxAttempts: 5
+        waitDuration: 100ms
+      aiRetry:
+        baseConfig: default
+        maxAttempts: 20
+        waitDuration: 100ms
