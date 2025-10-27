@@ -1,21 +1,11 @@
-eureka:
-  client:
-    service-url:
-      defaultZone: ${EUREKA_REPLICAS:http://eureka-1:8761/eureka,http://eureka-2:8762/eureka,http://eureka-3:8763/eureka}
-    register-with-eureka: true
-    fetch-registry: true
-    registry-fetch-interval-seconds: 5
-    eureka-server-connect-timeout-seconds: 5
-    eureka-server-read-timeout-seconds: 8
-  instance:
-    instance-id: ${spring.application.name}
-    hostname: ${spring.application.name}
-    app-group-name: ${spring.application.name}
-    lease-renewal-interval-in-seconds: 10
-    lease-expiration-duration-in-seconds: 30
-    metadata-map:
-      zone: ${ZONE:default}
-      version: ${VERSION:1.0.0}
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          httpclient:
+            connect-timeout: 5000
+            response-timeout: 30000
 
 management:
   endpoints:
@@ -80,38 +70,85 @@ management:
 
 # Resilience4j Actuator endpoints e métricas
 resilience4j:
+  ratelimiter:
+    configs:
+      default:
+        limitForPeriod: 100          # Número de requisições permitidas por período
+        limitRefreshPeriod: 1s        # Período de renovação
+        timeoutDuration: 0s           # Timeout para adquirir permissão (0 = falha imediata)
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 100
+
+    instances:
+      defaultRateLimiter:
+        baseConfig: default
+        limitForPeriod: 100
+        limitRefreshPeriod: 1s
+
+      nexusRateLimiter:
+        baseConfig: default
+        limitForPeriod: 50
+        limitRefreshPeriod: 1s
+        timeoutDuration: 100ms
+
+      aiRateLimiter:
+        limitForPeriod: 10           # 10 requisições
+        limitRefreshPeriod: 1s        # por segundo
+        timeoutDuration: 0s
+        registerHealthIndicator: true
+
+      aiHeavyRateLimiter:
+        limitForPeriod: 2             # 2 requisições
+        limitRefreshPeriod: 1s        # por segundo
+        timeoutDuration: 0s
+        registerHealthIndicator: true
+
   circuitbreaker:
     configs:
       default:
         registerHealthIndicator: true
         slidingWindowSize: 10
         minimumNumberOfCalls: 5
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10s
         permittedNumberOfCallsInHalfOpenState: 3
-        slowCallDurationThreshold: 2s
-        slowCallRateThreshold: 50
-    metrics:
-      enabled: true
-      legacy:
-        enabled: false
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
 
+    instances:
+      nexusCircuitBreaker:
+        baseConfig: default
+        slowCallDurationThreshold: 500ms
+        slowCallRateThreshold: 50
+
+      aiCircuitBreaker:
+        baseConfig: default
+        slidingWindowSize: 20
+        minimumNumberOfCalls: 10
+        waitDurationInOpenState: 30s
+        slowCallDurationThreshold: 30s
+        permittedNumberOfCallsInHalfOpenState: 5
+
+  # Retry Configuration
   retry:
     configs:
       default:
         maxAttempts: 3
         waitDuration: 100ms
-    metrics:
-      enabled: true
-      legacy:
-        enabled: false
+        retryExceptions:
+          - java.io.IOException
+          - java.net.SocketTimeoutException
 
-  timelimiter:
-    configs:
-      default:
-        timeoutDuration: 30s
-    metrics:
-      enabled: true
+    instances:
+      nexusRetry:
+        baseConfig: default
+        maxAttempts: 5
+        waitDuration: 100ms
+
+      aiRetry:
+        baseConfig: default
+        maxAttempts: 20
+        waitDuration: 100ms
 
 logging:
   level:

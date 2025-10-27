@@ -34,18 +34,6 @@ spring:
         initialize-schema: true
         id-type: uuid
 
-    mcp:
-      client:
-        toolcallback:
-          enabled: true
-        sse:
-          connections:
-            mcp-server:
-              url: http://gateway:8080
-              sse-endpoint: /mcp/sse
-        request-timeout: 30000
-        enabled: true
-
 management:
   endpoints:
     web:
