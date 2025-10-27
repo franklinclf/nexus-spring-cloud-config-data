@@ -1,34 +1,12 @@
-spring:
-  cloud:
-    gateway:
-      server:
-        webflux:
-          httpclient:
-            connect-timeout: 5000
-            response-timeout: 30000
-
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,prometheus,gateway
-  endpoint:
-    health:
-      show-details: always
-      show-components: always
-      probes:
+        include: "*"
+      discovery:
         enabled: true
-    metrics:
-      access: unrestricted
-    prometheus:
-      access: unrestricted
-    gateway:
-      access: unrestricted
-  health:
-    circuitbreakers:
-      enabled: true
-    defaults:
-      enabled: true
+    access:
+      default: unrestricted
   prometheus:
     metrics:
       export:
@@ -38,114 +16,32 @@ management:
     export:
       enabled: true
   metrics:
+    tags:
+      application: ${spring.application.name}-${REPLICA_ID:1}
+    distribution:
+      percentiles-histogram:
+        enabled: true
+        http.server.requests: true
+        http.client.requests: true
     enable:
       jvm: true
       process: true
       system: true
-    tags:
-      application: ${spring.application.name}
-    distribution:
-      percentiles-histogram:
-        http.server.requests: true
-        http.client.requests: true
-        resilience4j.circuitbreaker.calls: true
-        spring.cloud.gateway.requests: true
-      percentiles:
-        http.server.requests: 0.5, 0.95, 0.99
-        http.client.requests: 0.5, 0.95, 0.99
-        spring.cloud.gateway.requests: 0.5, 0.95, 0.99
-  observations:
-    key-values:
-      application: ${spring.application.name}
   tracing:
     sampling:
       probability: 1
   zipkin:
     tracing:
-      endpoint: http://zipkin:9411/
-      connect-timeout: 5s
-      read-timeout: 10s
       export:
         enabled: true
-
-# Resilience4j Actuator endpoints e métricas
-resilience4j:
-  ratelimiter:
-    configs:
-      default:
-        limitForPeriod: 100          # Número de requisições permitidas por período
-        limitRefreshPeriod: 1s        # Período de renovação
-        timeoutDuration: 0s           # Timeout para adquirir permissão (0 = falha imediata)
-        registerHealthIndicator: true
-        eventConsumerBufferSize: 100
-
-    instances:
-      defaultRateLimiter:
-        baseConfig: default
-        limitForPeriod: 100
-        limitRefreshPeriod: 1s
-
-      nexusRateLimiter:
-        baseConfig: default
-        limitForPeriod: 50
-        limitRefreshPeriod: 1s
-        timeoutDuration: 100ms
-
-      aiRateLimiter:
-        limitForPeriod: 10           # 10 requisições
-        limitRefreshPeriod: 1s        # por segundo
-        timeoutDuration: 0s
-        registerHealthIndicator: true
-
-      aiHeavyRateLimiter:
-        limitForPeriod: 2             # 2 requisições
-        limitRefreshPeriod: 1s        # por segundo
-        timeoutDuration: 0s
-        registerHealthIndicator: true
-
-  circuitbreaker:
-    configs:
-      default:
-        registerHealthIndicator: true
-        slidingWindowSize: 10
-        minimumNumberOfCalls: 5
-        permittedNumberOfCallsInHalfOpenState: 3
-        automaticTransitionFromOpenToHalfOpenEnabled: true
-        waitDurationInOpenState: 10s
-        failureRateThreshold: 50
-        eventConsumerBufferSize: 10
-
-    instances:
-      nexusCircuitBreaker:
-        baseConfig: default
-        slowCallDurationThreshold: 500ms
-        slowCallRateThreshold: 50
-
-      aiCircuitBreaker:
-        baseConfig: default
-        slidingWindowSize: 20
-        minimumNumberOfCalls: 10
-        waitDurationInOpenState: 30s
-        slowCallDurationThreshold: 30s
-        permittedNumberOfCallsInHalfOpenState: 5
-
-  # Retry Configuration
-  retry:
-    configs:
-      default:
-        maxAttempts: 3
-        waitDuration: 100ms
-        retryExceptions:
-          - java.io.IOException
-          - java.net.SocketTimeoutException
-
-    instances:
-      nexusRetry:
-        baseConfig: default
-        maxAttempts: 5
-        waitDuration: 100ms
-
-      aiRetry:
-        baseConfig: default
-        maxAttempts: 20
-        waitDuration: 100ms
+      endpoint: http://zipkin:9411/api/v2/spans
+  endpoint:
+    metrics:
+      access: unrestricted
+    prometheus:
+      access: unrestricted
+    health:
+      show-details: always
+      show-components: always
+      probes:
+        enabled: true
