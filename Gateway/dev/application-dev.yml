@@ -65,8 +65,10 @@ management:
   zipkin:
     tracing:
       endpoint: http://zipkin:9411/api/v2/spans
-      connect-timeout: 1s
+      connect-timeout: 5s
       read-timeout: 10s
+      export:
+        enabled: true
 
 # Resilience4j Actuator endpoints e métricas
 resilience4j:
