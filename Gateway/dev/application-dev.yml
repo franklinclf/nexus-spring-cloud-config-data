@@ -21,10 +21,6 @@ spring:
                 - Path=/nexus/**
               filters:
                 - StripPrefix=1
-                - name: CircuitBreaker
-                  args:
-                    name: nexusCircuitBreaker
-                    fallbackUri: forward:/fallback
                 - name: Retry
                   args:
                     retries: 5
@@ -75,16 +71,6 @@ spring:
               lower-case-service-id: true
               enabled: true
 
-resilience4j:
-  circuitbreaker:
-    instances:
-      nexusCircuitBreaker:
-        sliding-window-size: 15
-        minimum-number-of-calls: 5
-        permitted-number-of-calls-in-half-open-state: 5
-        wait-duration-in-open-state: 10000
-        failure-rate-threshold: 50
-
 management:
   endpoints:
     web:
@@ -104,7 +90,7 @@ management:
       enabled: true
   metrics:
     tags:
-      application: ${spring.application.name}-${REPLICA_ID:1}
+      application: ${spring.application.name}
     distribution:
       percentiles-histogram:
         enabled: true
