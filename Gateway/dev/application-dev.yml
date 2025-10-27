@@ -12,7 +12,6 @@ management:
     web:
       exposure:
         include: "*"
-      base-path: /actuator
   endpoint:
     health:
       show-details: always
@@ -35,10 +34,16 @@ management:
       export:
         enabled: true
         step: 5s
+  logging:
+    export:
+      enabled: true
   metrics:
+    enable:
+      jvm: true
+      process: true
+      system: true
     tags:
       application: ${spring.application.name}
-      environment: ${ENVIRONMENT:dev}
     distribution:
       percentiles-histogram:
         http.server.requests: true
@@ -144,13 +149,3 @@ resilience4j:
         baseConfig: default
         maxAttempts: 20
         waitDuration: 100ms
-
-logging:
-  level:
-    org.springframework.cloud.gateway: DEBUG
-    io.github.resilience4j: DEBUG
-    io.micrometer: DEBUG
-    com.netflix.discovery: INFO
-    com.netflix.eureka: INFO
-  pattern:
-    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"

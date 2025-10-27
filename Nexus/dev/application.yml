@@ -34,20 +34,6 @@ spring:
         initialize-schema: true
         id-type: uuid
 
-    mcp:
-      server:
-        name: mcp-server
-        sse-endpoint: /sse
-        sse-message-endpoint: /sse/message
-        type: sync
-        enabled: true
-        capabilities:
-          tool: true
-        version: 1.0.0
-        stdio: false
-        request-timeout: 60s
-        base-url: /tools
-
 management:
   endpoints:
     web:
