@@ -1,0 +1,50 @@
+server:
+  port: ${PORT:8081}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      discovery:
+        enabled: true
+    access:
+      default: unrestricted
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        step: 5s
+  logging:
+    export:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}-${REPLICA_ID:1}
+    distribution:
+      percentiles-histogram:
+        enabled: true
+        http.server.requests: true
+        http.client.requests: true
+    enable:
+      jvm: true
+      process: true
+      system: true
+  tracing:
+    sampling:
+      probability: 1
+  zipkin:
+    tracing:
+      export:
+        enabled: true
+      endpoint: http://zipkin:9411/api/v2/spans
+  endpoint:
+    metrics:
+      access: unrestricted
+    prometheus:
+      access: unrestricted
+    health:
+      show-details: always
+      show-components: always
+      probes:
+        enabled: true
