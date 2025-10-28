@@ -9,6 +9,34 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  data:
+    redis:
+      host: ${REDIS_HOST:redis}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000  # 10 minutos padrão
+
+  graphql:
+    graphiql:
+      enabled: true
+      path: /graphiql
+    schema:
+      printer:
+        enabled: true
+    websocket:
+      path: /graphql-ws
+    http:
+      path: /graphql
 
   ai:
     openai:
