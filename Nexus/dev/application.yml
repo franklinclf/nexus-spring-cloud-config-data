@@ -5,7 +5,6 @@ management:
         include: "*"
       discovery:
         enabled: true
-      base-path: /actuator
     access:
       default: unrestricted
   prometheus:
@@ -13,8 +12,6 @@ management:
       export:
         enabled: true
         step: 5s
-        pushgateway:
-          enabled: true
   logging:
     export:
       enabled: true
@@ -26,20 +23,13 @@ management:
         enabled: true
         http.server.requests: true
         http.client.requests: true
-        resilience4j.circuitbreaker.calls: true
-      percentiles:
-        http.server.requests: 0.5, 0.95, 0.99
     enable:
       jvm: true
       process: true
       system: true
-      all: true
   tracing:
     sampling:
       probability: 1
-    enabled: true
-    propagation:
-      type: W3C
   zipkin:
     tracing:
       export:
@@ -55,5 +45,3 @@ management:
       show-components: always
       probes:
         enabled: true
-    gateway:
-      access: unrestricted
